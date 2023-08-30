@@ -1,10 +1,6 @@
 import 'dart:convert';
 
-Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
-
-String welcomeToJson(Welcome data) => json.encode(data.toJson());
-
-class Welcome {
+class MarvelMovieModel {
   int id;
   String title;
   String releaseDate;
@@ -20,7 +16,7 @@ class Welcome {
   String imdbId;
   String updatedAt;
 
-  Welcome({
+  MarvelMovieModel({
     required this.id,
     required this.title,
     required this.releaseDate,
@@ -37,7 +33,13 @@ class Welcome {
     required this.updatedAt,
   });
 
-  factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+  factory MarvelMovieModel.fromRawJson(String str) =>
+      MarvelMovieModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory MarvelMovieModel.fromJson(Map<String, dynamic> json) =>
+      MarvelMovieModel(
         id: json["id"],
         title: json["title"],
         releaseDate: json["release_date"],
