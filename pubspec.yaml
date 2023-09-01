@@ -38,6 +38,7 @@ dependencies:
   provider:
   path_provider:
   http:
+  shimmer:
 
 dev_dependencies:
   flutter_test:
