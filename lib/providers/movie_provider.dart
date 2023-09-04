@@ -7,9 +7,10 @@ import 'dart:convert';
 
 class MoviesProvider with ChangeNotifier {
   List<MarvelMovieModel> movies = [];
-  bool isLoading = false;
+
+  bool isLoading = true;
   bool isFailed = false;
-  // the function is used to set a loading state
+
   setLoading(bool status) {
     Timer(const Duration(milliseconds: 50), () {
       isLoading = status;
@@ -17,15 +18,26 @@ class MoviesProvider with ChangeNotifier {
     });
   }
 
+  setFailed(bool status) {
+    Timer(const Duration(milliseconds: 50), () {
+      isFailed = status;
+      notifyListeners();
+    });
+  }
+
   fetchMovies() async {
     setLoading(true);
+
     final response =
-        await http.get(Uri.parse('https://mcuapi.herokuapp.com/api/v1/movies'));
-    var decodedData =
-        json.decode(response.body)['data']; // decode data from text to Json
-    for (var x in decodedData) {
-      movies.add(MarvelMovieModel.fromJson(
-          x)); // to specify its coming as a json an dconverted to dart
+        await http.get(Uri.parse("https://mcuapi.herokuapp.com/api/v1/movies"));
+
+    if (response.statusCode == 200) {
+      var decodedData = json.decode(response.body)['data'];
+      for (var x in decodedData) {
+        movies.add(MarvelMovieModel.fromJson(x));
+      }
+    } else {
+      setFailed(true);
     }
 
     setLoading(false);

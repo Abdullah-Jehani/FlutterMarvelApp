@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/helpers/const.dart';
+import 'package:marvel_app/main.dart';
+import 'package:marvel_app/providers/auth_provider.dart';
 import 'package:marvel_app/providers/movie_provider.dart';
 
 import 'package:marvel_app/widgets/custom_icon_button.dart';
@@ -20,13 +24,53 @@ class _HomeScreenState extends State<HomeScreen> {
     Provider.of<MoviesProvider>(context, listen: false).fetchMovies();
     super.initState();
   }
+  // we use provuider.of to get the instance of the provider class
+  // we use listen false because we dont want to rebuild the widget
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Consumer<MoviesProvider>(builder: (context, movie, child) {
       return Scaffold(
-          drawer: const Drawer(),
+          drawer: Drawer(
+            child: SafeArea(
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: const ListTile(
+                      title: Text('About'),
+                      trailing: Icon(Icons.info),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: const ListTile(
+                      title: Text('Settings'),
+                      trailing: Icon(Icons.settings),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .logout()
+                          .then((value) {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => const ScreenRouter()),
+                            (route) => false);
+                      });
+                    },
+                    child: const ListTile(
+                      title: Text('Logout'),
+                      trailing: Icon(Icons.exit_to_app),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           appBar: AppBar(
             centerTitle: true,
             title: Image.asset(
@@ -44,40 +88,67 @@ class _HomeScreenState extends State<HomeScreen> {
                   onpressed: () {})
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-            child: GridView.builder(
-              itemCount: movie.isLoading ? 20 : movie.movies.length,
-              itemBuilder: (context, index) {
-                return movie.isLoading
-                    ? Container(
-                        decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.2),
-                            border: Border.all(
-                                color: primaryColor.withOpacity(0.3)),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16))),
-                        child: SizedBox(
-                          child: Shimmer.fromColors(
-                              baseColor: primaryColor.withOpacity(0.2),
-                              highlightColor: Colors.white,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.2),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(16))),
-                              )),
-                        ),
-                      )
-                    : MovieCard(movieCardModel: movie.movies[index]);
-              },
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 24,
-                  mainAxisSpacing: 24,
-                  childAspectRatio: 1 / 1.5),
-            ),
-          )
+          body: movie.isFailed
+              ? RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      Provider.of<MoviesProvider>(context, listen: false)
+                          .fetchMovies();
+                    });
+
+                    if (kDebugMode) {
+                      print('done');
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 300.0),
+                    child: ListView(
+                      children: const [
+                        Center(
+                          child: Text(
+                            'SomeThing Went Wrong!',
+                            style: TextStyle(color: Colors.red, fontSize: 20),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {},
+                  child: GridView.builder(
+                    itemCount: movie.isLoading ? 20 : movie.movies.length,
+                    itemBuilder: (context, index) {
+                      return movie.isLoading
+                          ? Container(
+                              decoration: BoxDecoration(
+                                  color: primaryColor.withOpacity(0.2),
+                                  border: Border.all(
+                                      color: primaryColor.withOpacity(0.3)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(16))),
+                              child: SizedBox(
+                                child: Shimmer.fromColors(
+                                    baseColor: primaryColor.withOpacity(0.2),
+                                    highlightColor: Colors.white,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.2),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(16))),
+                                    )),
+                              ),
+                            )
+                          : MovieCard(movieCardModel: movie.movies[index]);
+                    },
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 24,
+                            mainAxisSpacing: 24,
+                            childAspectRatio: 1 / 1.5),
+                  ),
+                )
 
           //  Center(
           //     child: CircularProgressIndicator(
