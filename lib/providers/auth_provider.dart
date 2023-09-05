@@ -1,5 +1,6 @@
 import 'dart:async' show Future, Timer;
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,22 +34,72 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> login(Map userBody) async {
+  Future<List> login(Map userBody, BuildContext context) async {
     setLoading(true);
     final response = await http.post(
-        Uri.parse("http://172.20.10.9:8000/api/auth/login"),
-        headers: {"Accept": "Application/json"},
-        body: userBody);
-    if (response.statusCode == 200) {
-      // if success we have to generate to the user a new token .
-      var decodedToken =
-          json.decode(response.body)['access_token']; // this 2 lines
-      final SharedPreferences prefs =
-          await SharedPreferences.getInstance(); // this 2 lines
-      prefs.setString('token', decodedToken);
-      setLoading(false);
+      Uri.parse("https://api.ha-k.ly/api/v1/client/auth/login"),
+      body: json.encode(userBody),
+      headers: {
+        "Accept": "Application/json",
+        "content-type": "Application/json"
+      },
+    );
+    if (response.statusCode == 201) {
+      setAuthenticated(true);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var decodedToken = json.decode(response.body)['token'];
+      prefs.setString("token", decodedToken);
+      if (kDebugMode) {
+        print(" Response Status${response.statusCode}");
+      }
+      if (kDebugMode) {
+        print(" Response Body ${userBody}");
+      }
+      return [true, ''];
+    } else {
+      setAuthenticated(false);
+      if (kDebugMode) {
+        print(" Response Status${response.statusCode}");
+      }
+      if (kDebugMode) {
+        print(" Response Body ${userBody}");
+      }
+      return [false, json.decode(response.body)['message']];
     }
-    return true;
+  }
+
+  Future<List> register(Map userBody, BuildContext context) async {
+    setLoading(true);
+    final response = await http.post(
+      Uri.parse("https://api.ha-k.ly/api/v1/client/auth/register"),
+      body: json.encode(userBody),
+      headers: {
+        "Accept": "Application/json",
+        "content-type": "Application/json"
+      },
+    );
+    if (response.statusCode == 201) {
+      setAuthenticated(true);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var decodedToken = json.decode(response.body)['token'];
+      prefs.setString("token", decodedToken);
+      if (kDebugMode) {
+        print(" Response Status${response.statusCode}");
+      }
+      if (kDebugMode) {
+        print(" Response Body ${userBody}");
+      }
+      return [true, ''];
+    } else {
+      setAuthenticated(false);
+      if (kDebugMode) {
+        print(" Response Status${response.statusCode}");
+      }
+      if (kDebugMode) {
+        print(" Response Body ${userBody}");
+      }
+      return [false, json.decode(response.body)['message']];
+    }
   }
 
   Future<bool> logout() async {
