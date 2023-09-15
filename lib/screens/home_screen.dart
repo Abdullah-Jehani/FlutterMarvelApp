@@ -5,6 +5,7 @@ import 'package:marvel_app/helpers/const.dart';
 import 'package:marvel_app/main.dart';
 import 'package:marvel_app/providers/auth_provider.dart';
 import 'package:marvel_app/providers/movie_provider.dart';
+import 'package:marvel_app/screens/my_profile.dart';
 
 import 'package:marvel_app/widgets/custom_icon_button.dart';
 import 'package:marvel_app/widgets/movie_card.dart';
@@ -37,10 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => const MyProfile()));
+                    },
                     child: const ListTile(
-                      title: Text('About'),
-                      trailing: Icon(Icons.info),
+                      title: Text('My Profile'),
+                      trailing: Icon(Icons.verified_user_outlined),
                     ),
                   ),
                   GestureDetector(
@@ -116,37 +122,42 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               : RefreshIndicator(
                   onRefresh: () async {},
-                  child: GridView.builder(
-                    itemCount: movie.isLoading ? 20 : movie.movies.length,
-                    itemBuilder: (context, index) {
-                      return movie.isLoading
-                          ? Container(
-                              decoration: BoxDecoration(
-                                  color: primaryColor.withOpacity(0.2),
-                                  border: Border.all(
-                                      color: primaryColor.withOpacity(0.3)),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16))),
-                              child: SizedBox(
-                                child: Shimmer.fromColors(
-                                    baseColor: primaryColor.withOpacity(0.2),
-                                    highlightColor: Colors.white,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.2),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(16))),
-                                    )),
-                              ),
-                            )
-                          : MovieCard(movieCardModel: movie.movies[index]);
-                    },
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 24,
-                            mainAxisSpacing: 24,
-                            childAspectRatio: 1 / 1.5),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: GridView.builder(
+                      itemCount: movie.isLoading ? 20 : movie.movies.length,
+                      itemBuilder: (context, index) {
+                        return movie.isLoading
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    color: primaryColor.withOpacity(0.2),
+                                    border: Border.all(
+                                        color: primaryColor.withOpacity(0.3)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(16))),
+                                child: SizedBox(
+                                  child: Shimmer.fromColors(
+                                      baseColor: primaryColor.withOpacity(0.2),
+                                      highlightColor: Colors.white,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Colors.black.withOpacity(0.2),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(16))),
+                                      )),
+                                ),
+                              )
+                            : MovieCard(movieCard: movie.movies[index]);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 20,
+                              childAspectRatio: 1 / 1.5),
+                    ),
                   ),
                 )
 

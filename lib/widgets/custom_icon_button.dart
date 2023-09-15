@@ -28,7 +28,7 @@ class _CustomIconButtonState extends State<CustomIconButton> {
                 border: Border.all(color: primaryColor.withOpacity(.3)),
                 borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(8),
               child: Image.asset(
                 widget.asset,
                 width: 24,

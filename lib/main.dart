@@ -54,7 +54,7 @@ class _ScreenRouterState extends State<ScreenRouter> {
     return Consumer<AuthProvider>(builder: (context, authConsumer, child) {
       return authConsumer.authenticated
           ? const HomeScreen()
-          : const Scaffold(body: LoginScreen());
+          : const LoginScreen();
     });
   }
 }

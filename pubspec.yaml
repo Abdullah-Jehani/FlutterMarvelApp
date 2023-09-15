@@ -42,6 +42,8 @@ dependencies:
   shimmer:
   pull_to_refresh:
   shared_preferences: ^2.2.1
+  iconify_flutter:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:

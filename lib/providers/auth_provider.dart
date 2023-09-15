@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:marvel_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   String? token;
   late bool authenticated;
   bool isLoading = false;
+  UserModel? userModel;
 
   setLoading(bool value) {
     Timer(const Duration(milliseconds: 50), () {
@@ -27,11 +29,29 @@ class AuthProvider with ChangeNotifier {
   initAuthentication() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    if (kDebugMode) {
+      print(token);
+    }
     if (token != null) {
       setAuthenticated(true);
     } else {
       setAuthenticated(false);
     }
+  }
+
+  getUsers() async {
+    setLoading(true);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final respone = await http
+        .get(Uri.parse('https://api.ha-k.ly/api/v1/client/auth/me'), headers: {
+      "Accept": "Application/json",
+      "content-type": "Application/json",
+      "Authorization": "Bearer ${prefs.getString("token")}"
+    });
+    if (respone.statusCode == 200) {
+      userModel = UserModel.fromJson(json.decode(respone.body)['data']);
+    }
+    setLoading(false);
   }
 
   Future<List> login(Map userBody, BuildContext context) async {
@@ -84,19 +104,19 @@ class AuthProvider with ChangeNotifier {
       var decodedToken = json.decode(response.body)['token'];
       prefs.setString("token", decodedToken);
       if (kDebugMode) {
-        print(" Response Status${response.statusCode}");
+        print(" Response Status : ${response.statusCode}");
       }
       if (kDebugMode) {
-        print(" Response Body ${userBody}");
+        print(" Response Body {$userBody}");
       }
       return [true, ''];
     } else {
       setAuthenticated(false);
       if (kDebugMode) {
-        print(" Response Status${response.statusCode}");
+        print(" Response Status : ${response.statusCode}");
       }
       if (kDebugMode) {
-        print(" Response Body ${userBody}");
+        print(" Response Body {$userBody}");
       }
       return [false, json.decode(response.body)['message']];
     }

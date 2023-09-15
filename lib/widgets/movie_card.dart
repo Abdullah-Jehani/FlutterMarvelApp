@@ -1,57 +1,67 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/models/marvil_movie_model.dart';
+import 'package:marvel_app/screens/detailed_movie_screen.dart';
 
-class MovieCard extends StatefulWidget {
-  const MovieCard({super.key, required this.movieCardModel});
-  final MarvelMovieModel movieCardModel;
+class MovieCard extends StatelessWidget {
+  const MovieCard({super.key, required this.movieCard});
+  final MarvelMovieModel movieCard;
 
-  @override
-  State<MovieCard> createState() => _MovieCardState();
-}
-
-class _MovieCardState extends State<MovieCard> {
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-          footer: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.black87, Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "0"
-                    "${((widget.movieCardModel.duration) / 60).toStringAsFixed(2).replaceAll(".", ":")}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontFamily: 'poppins',
-                    ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) =>
+                    DetailedMovieScreen(marvelMovieModel: movieCard)));
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: GridTile(
+              footer: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.black87, Colors.transparent],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "0"
+                        "${((movieCard.duration) / 60).toStringAsFixed(2).replaceAll(".", ":")}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: 'poppins',
+                        ),
+                      ),
+                      Text(
+                        movieCard.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontFamily: 'poppins',
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    widget.movieCardModel.title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'poppins',
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-          child: Image.network(
-            widget.movieCardModel.coverUrl,
-            fit: BoxFit.cover,
-          )),
+              child: Image.network(
+                movieCard.coverUrl,
+                fit: BoxFit.cover,
+              )),
+        ),
+      ),
     );
   }
 }

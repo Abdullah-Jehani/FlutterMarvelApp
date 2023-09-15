@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:marvel_app/helpers/const.dart';
-import 'package:marvel_app/screens/home_screen.dart';
+import 'package:marvel_app/main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(const Duration(seconds: 5), () {
       Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => const HomeScreen()));
+          CupertinoPageRoute(builder: (context) => const ScreenRouter()));
     });
 
     super.initState();

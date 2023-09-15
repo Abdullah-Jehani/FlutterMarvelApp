@@ -51,48 +51,58 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: size.height * .125,
                   ),
                 ),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: phoneController,
-                  decoration: const InputDecoration(
-                      hintText: "email",
-                      hintStyle: TextStyle(color: Colors.grey)),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'please enter a username';
-                    }
-                    if (value.length < 8) {
-                      return "user email must be 8 characters";
-                    }
-                    return null;
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: phoneController,
+                    decoration: InputDecoration(
+                        hintText: "Phone Number",
+                        hintStyle: const TextStyle(
+                            color: Colors.grey, fontFamily: 'poppins'),
+                        focusColor: primaryColor),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'please enter a phone number';
+                      }
+                      if (value.length != 9) {
+                        return "user email must be 9 characters";
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-                TextFormField(
-                  obscureText: hidePass,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      suffix: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              hidePass = !hidePass;
-                            });
-                          },
-                          child: Icon(hidePass
-                              ? Icons.visibility
-                              : Icons.visibility_off)),
-                      hintText: "password",
-                      hintStyle: const TextStyle(color: Colors.grey)),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "please enter password";
-                    }
-                    if (value.length < 8) {
-                      return "password must be 8 chars";
-                    }
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    obscureText: hidePass,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                        suffix: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                hidePass = !hidePass;
+                              });
+                            },
+                            child: Icon(hidePass
+                                ? Icons.visibility
+                                : Icons.visibility_off)),
+                        hintText: "password",
+                        hintStyle: const TextStyle(
+                            color: Colors.grey, fontFamily: 'poppins'),
+                        focusColor: primaryColor),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "please enter password";
+                      }
+                      if (value.length < 8) {
+                        return "password must be 8 chars";
+                      }
 
-                    return null;
-                  },
+                      return null;
+                    },
+                  ),
                 ),
                 Center(
                   child: Padding(
@@ -146,8 +156,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Row(
                     children: [
                       const Text(
-                        'Dont have an account ?',
-                        style: TextStyle(fontSize: 15, fontFamily: 'poppins'),
+                        'Dont have an account ?.',
+                        style: TextStyle(
+                            fontSize: 15,
+                            letterSpacing: 0,
+                            fontFamily: 'poppins'),
                       ),
                       TextButton(
                           onPressed: () {
@@ -158,12 +171,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         const RegisterScreen(),
                                     context: context));
                           },
-                          child: Text(
-                            'Register Now !',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'poppins',
-                                color: primaryColor),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: Text(
+                              'Register Now !',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'poppins',
+                                  color: primaryColor),
+                            ),
                           ))
                     ],
                   ),
